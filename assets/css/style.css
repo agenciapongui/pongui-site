@@ -181,41 +181,41 @@ p:last-child { margin-bottom: 0; }
   position: relative; z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   text-align: left;
 }
 /* No mobile, hero-content "some" do fluxo (display: contents) para que
    H1, subtítulo e badges virem irmãos do hero-form, permitindo reordenar
-   via `order`. Ordem mobile: H1 → FORM (CTA na 1ª dobra) → subtítulo → badges */
+   via `order`. Ordem mobile: H1 → subtítulo → FORM (CTA na 1ª dobra) → badges */
 .hero-content { display: contents; }
 .hero-h1 {
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1.15;
   margin-bottom: 0;
   color: var(--cor-texto);
   text-align: left;
   order: 1;
 }
-.hero-form { order: 2; }
 .hero-sub {
-  font-size: 16px;
-  line-height: 1.45;
+  font-size: 15px;
+  line-height: 1.4;
   color: var(--cor-texto-sub);
   margin-bottom: 0;
-  order: 3;
+  order: 2;
 }
+.hero-form { order: 3; }
 .hero-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 0;
   order: 4;
 }
 .badge {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 13px;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
   color: var(--cor-texto-off);
   white-space: nowrap;
 }
@@ -232,9 +232,9 @@ p:last-child { margin-bottom: 0; }
   .hero-content { display: block; flex: 0 0 55%; }
   .hero-h1 { font-size: 48px; line-height: 1.15; margin-bottom: 20px; order: 0; }
   .hero-sub { font-size: 19px; line-height: 1.5; margin-bottom: 24px; order: 0; }
-  .hero-badges { margin-bottom: 8px; order: 0; }
+  .hero-badges { gap: 8px; margin-bottom: 8px; order: 0; }
   .hero-form { flex: 0 0 auto; width: 420px; margin-left: auto; order: 0; }
-  .badge { font-size: 14px; }
+  .badge { padding: 8px 16px; border-radius: 8px; font-size: 14px; }
 }
 
 @media (min-width: 1440px) {
