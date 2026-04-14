@@ -108,10 +108,11 @@ p:last-child { margin-bottom: 0; }
   .btn { font-size: 23px; padding: 16px 40px; width: auto; }
 }
 
-/* ---------- SEÇÕES ---------- */
+/* ---------- SEÇÕES (default: centralizado) ---------- */
 .section {
-  padding: 64px 0;
+  padding: 48px 0;
   background: var(--cor-fundo-hero);
+  text-align: center;
 }
 .section-alt { background: var(--cor-fundo-alt); }
 
@@ -120,18 +121,19 @@ p:last-child { margin-bottom: 0; }
   font-weight: 400;
   font-size: 28px;
   color: var(--cor-texto);
-  margin-bottom: 24px;
+  margin: 0 auto 20px;
+  max-width: 780px;
+  text-align: center;
 }
 .section-h2 strong { font-weight: 700; }
-.section-h2.center { text-align: center; }
 
 .section-sub {
   color: var(--cor-texto-sub);
   font-size: 16px;
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
   max-width: 720px;
+  text-align: center;
 }
-.section-sub.center { text-align: center; margin-left: auto; margin-right: auto; }
 
 .section-body {
   font-size: 16px;
@@ -141,16 +143,10 @@ p:last-child { margin-bottom: 0; }
 }
 
 .section-cta { text-align: center; margin-top: 40px; }
-.section-footer-note {
-  color: var(--cor-texto-sub);
-  font-size: 16px;
-  max-width: 600px;
-  margin-top: 24px;
-}
 
 @media (min-width: 1024px) {
-  .section { padding: 96px 0; }
-  .section-h2 { font-size: 48px; margin-bottom: 32px; }
+  .section { padding: 80px 0; }
+  .section-h2 { font-size: 44px; margin-bottom: 24px; }
   .section-sub { font-size: 19px; margin-bottom: 48px; }
   .section-body { font-size: 22px; }
 }
@@ -162,6 +158,10 @@ p:last-child { margin-bottom: 0; }
   padding: 100px 0 48px;
   overflow: hidden;
   background: var(--cor-fundo-hero);
+  /* gradiente de fallback caso a imagem demore ou falhe */
+  background-image: linear-gradient(135deg, #000 0%, #0a0a0a 50%, #050404 100%);
+  background-size: cover;
+  background-position: center;
 }
 .hero-bg {
   position: absolute; inset: 0;
@@ -169,7 +169,6 @@ p:last-child { margin-bottom: 0; }
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* fallback color stays visible if image is missing */
   background-color: var(--cor-fundo-alt);
   z-index: 0;
 }
@@ -183,12 +182,14 @@ p:last-child { margin-bottom: 0; }
   display: flex;
   flex-direction: column;
   gap: 32px;
+  text-align: left;
 }
 .hero-h1 {
-  font-size: 36px;
+  font-size: 32px;
   line-height: 1.15;
   margin-bottom: 20px;
   color: var(--cor-texto);
+  text-align: left;
 }
 .hero-sub {
   font-size: 16px;
@@ -220,96 +221,91 @@ p:last-child { margin-bottom: 0; }
   }
   .hero-content { flex: 0 0 55%; }
   .hero-form { flex: 0 0 auto; width: 420px; margin-left: auto; }
-  .hero-h1 { font-size: 64px; }
-  .hero-sub { font-size: 20px; }
+  .hero-h1 { font-size: 48px; }
+  .hero-sub { font-size: 19px; }
   .badge { font-size: 14px; }
 }
 
 @media (min-width: 1440px) {
-  .hero-h1 { font-size: 72px; }
+  .hero-h1 { font-size: 56px; }
 }
 
-/* ---------- SEÇÃO 2 — CASE ---------- */
-.case-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-.case-number {
-  text-align: center;
-}
-.big-number {
-  display: block;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 72px;
-  line-height: 1;
-  color: var(--cor-acento);
-  margin-bottom: 8px;
-}
-.big-number-sub {
-  display: block;
-  font-size: 16px;
-  color: var(--cor-texto-sub);
-  max-width: 260px;
+/* ---------- SEÇÃO 2 — TESTIMONIAL CARD (Antonio compacto) ---------- */
+.testimonial-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  background: var(--cor-card);
+  border-radius: 19px;
+  overflow: hidden;
+  max-width: 840px;
   margin: 0 auto;
+  text-align: left;
 }
-.case-content { flex: 1; }
-.case-intro { margin-top: 12px; margin-bottom: 8px; font-weight: 600; }
-.case-quote {
+.testimonial-media {
+  background: #0F0F0F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 260px;
+}
+.testimonial-img {
+  max-width: 100%;
+  max-height: 350px;
+  width: auto;
+  height: auto;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.testimonial-media.proof-fallback::after {
+  content: "📱";
+  font-size: 64px;
+  opacity: 0.3;
+}
+.testimonial-quote {
+  padding: 28px 28px 28px;
+  margin: 0;
   border-left: 4px solid var(--cor-acento);
-  padding: 12px 0 12px 20px;
-  margin: 0 0 24px;
   font-style: italic;
   color: var(--cor-texto-off);
-  font-size: 16px;
-  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.case-quote cite {
-  display: block;
-  margin-top: 12px;
+.testimonial-quote p {
+  font-size: 16px;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+.testimonial-quote cite {
   font-style: normal;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--cor-texto-sub);
   font-weight: 600;
-}
-.case-metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.metric-badge {
-  background: rgba(0, 100, 220, 0.15);
-  border-radius: 12px;
-  padding: 10px 16px;
-  font-size: 13px;
-  color: var(--cor-texto-off);
-  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
-@media (min-width: 1024px) {
-  .case-grid {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 64px;
-  }
-  .case-number { flex: 0 0 240px; position: sticky; top: 120px; }
-  .big-number { font-size: 120px; }
-  .big-number-sub { font-size: 18px; }
-  .case-quote { font-size: 19px; }
-  .metric-badge { padding: 12px 20px; font-size: 14px; }
+@media (min-width: 768px) {
+  .testimonial-card { grid-template-columns: 1fr 1.1fr; }
+  .testimonial-quote { padding: 36px 36px 36px 32px; }
+  .testimonial-quote p { font-size: 18px; }
+  .testimonial-quote cite { font-size: 14px; }
 }
 
-/* ---------- SEÇÃO 3 — MAIS RESULTADOS ---------- */
+/* ---------- SEÇÃO 3 — RESULTADOS ---------- */
 .results-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
+  text-align: left;
 }
 .result-card {
   background: var(--cor-card);
   border-radius: 19px;
   padding: 24px;
+  display: flex;
+  flex-direction: column;
 }
 .result-number {
   font-family: var(--font-heading);
@@ -331,6 +327,8 @@ p:last-child { margin-bottom: 0; }
   font-size: 15px;
   color: var(--cor-texto-sub);
   line-height: 1.5;
+  margin: 0;
+  flex: 1;
 }
 
 @media (min-width: 768px) {
@@ -343,7 +341,9 @@ p:last-child { margin-bottom: 0; }
 
 /* ---------- SEÇÃO 4 — CHECKLIST ---------- */
 .checklist {
-  margin-bottom: 24px;
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: left;
 }
 .checklist li {
   display: flex;
@@ -366,16 +366,20 @@ p:last-child { margin-bottom: 0; }
   .checklist li i { font-size: 28px; }
 }
 
-/* ---------- SEÇÃO 5 — SERVICES ---------- */
+/* ---------- SEÇÃO 5 — SERVIÇOS (3+3 desktop) ---------- */
 .services-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
+  text-align: left;
 }
 .service-card {
   background: var(--cor-card);
   border-radius: 19px;
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 .service-title {
   font-family: var(--font-heading);
@@ -383,31 +387,28 @@ p:last-child { margin-bottom: 0; }
   font-weight: 700;
   color: var(--cor-texto);
   margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 .service-sub {
   font-size: 13px;
   color: var(--cor-acento);
   font-weight: 600;
   margin-bottom: 12px;
-  text-transform: none;
 }
 .service-card p {
   font-size: 15px;
   color: var(--cor-texto-sub);
   line-height: 1.5;
   margin: 0;
+  flex: 1;
 }
 
 @media (min-width: 768px) {
-  .services-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .services-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .service-card { padding: 30px; }
-  .service-title { font-size: 24px; }
-  .service-card p { font-size: 17px; }
-  .service-card-wide { grid-column: 1 / -1; }
-}
-
-@media (min-width: 1024px) {
-  .service-card-wide { max-width: 50%; }
+  .service-title { font-size: 22px; }
+  .service-card p { font-size: 16px; }
 }
 
 /* ---------- SEÇÃO 6 — STEPS ---------- */
@@ -415,8 +416,12 @@ p:last-child { margin-bottom: 0; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
+  text-align: left;
 }
-.step-block { text-align: left; }
+.step-block {
+  display: flex;
+  flex-direction: column;
+}
 .step-num {
   font-family: var(--font-heading);
   font-weight: 700;
@@ -450,6 +455,7 @@ p:last-child { margin-bottom: 0; }
   flex-direction: column;
   gap: 24px;
   margin-top: 16px;
+  text-align: left;
 }
 .proof-card {
   display: grid;
@@ -467,11 +473,12 @@ p:last-child { margin-bottom: 0; }
   min-height: 220px;
 }
 .proof-img {
-  max-height: 320px;
+  max-height: 350px;
   width: auto;
   max-width: 100%;
   border-radius: 12px;
   object-fit: contain;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 .proof-media.proof-fallback,
 .proof-media.proof-fallback::after {
@@ -550,6 +557,7 @@ p:last-child { margin-bottom: 0; }
   flex-direction: column;
   gap: 32px;
   align-items: center;
+  text-align: left;
 }
 .authority-img {
   width: 100%;
@@ -561,6 +569,7 @@ p:last-child { margin-bottom: 0; }
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 .authority-img img {
   width: 100%;
@@ -572,7 +581,12 @@ p:last-child { margin-bottom: 0; }
   font-size: 64px;
   opacity: 0.3;
 }
-.authority-text { flex: 1; text-align: left; }
+.authority-text { flex: 1; }
+.authority-text .section-h2 {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+}
 .authority-text p {
   font-size: 16px;
   line-height: 1.5;
@@ -591,10 +605,15 @@ p:last-child { margin-bottom: 0; }
 }
 
 /* ---------- SEÇÃO 9 — FINAL ---------- */
-.section-final { padding-bottom: 80px; }
+.section-final { padding-bottom: 64px; }
 .final-form-wrapper {
   max-width: 520px;
   margin: 40px auto 0;
+  text-align: left;
+}
+
+@media (min-width: 1024px) {
+  .section-final { padding-bottom: 80px; }
 }
 
 /* ---------- FOOTER ---------- */
@@ -664,6 +683,7 @@ p:last-child { margin-bottom: 0; }
   width: 100%;
   overflow: hidden;
   position: relative;
+  text-align: left;
 }
 
 @media (min-width: 768px) {
