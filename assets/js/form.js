@@ -1,6 +1,7 @@
 /* ================================================================
    PONGUI — Formulário Multi-Step Qualificatório
-   Uma classe MultiStepForm; 2 instâncias na página (hero + final).
+   Fluxo: qualifica PRIMEIRO (faturamento/investimento),
+   só pede contato depois de saber que o lead tem perfil.
    ================================================================ */
 
 // ---- Configuração ----
@@ -36,26 +37,27 @@ class MultiStepForm {
   constructor(container) {
     this.container = container;
     this.data = { nome: "", telefone: "", faturamento: "", investimento: "" };
-    this.currentStep = "intro";   // intro | nome | tel | faturamento | investimento | aprovado | encerra
+    // Steps: intro -> faturamento -> [investimento] -> aprovado  (ou encerra)
+    this.currentStep = "intro";
     this.stepHistory = [];
     this.render();
   }
 
-  // mapa de steps com dot visível (1..4)
+  // dot mapping: faturamento=1, investimento=2, aprovado=3
   getDotIndex() {
-    const map = { nome: 1, tel: 2, faturamento: 3, investimento: 4, aprovado: 4 };
+    const map = { faturamento: 1, investimento: 2, aprovado: 3 };
     return map[this.currentStep] || 0;
   }
 
   showDots() {
-    return ["nome","tel","faturamento","investimento","aprovado"].includes(this.currentStep);
+    return ["faturamento","investimento","aprovado"].includes(this.currentStep);
   }
 
   render() {
     const dotIdx = this.getDotIndex();
     const dotsHtml = this.showDots()
       ? `<div class="form-progress">
-          ${[1,2,3,4].map(i => `<span class="progress-dot ${i <= dotIdx ? 'active':''}"></span>`).join("")}
+          ${[1,2,3].map(i => `<span class="progress-dot ${i <= dotIdx ? 'active':''}"></span>`).join("")}
         </div>`
       : `<div class="form-progress hidden"></div>`;
 
@@ -68,14 +70,12 @@ class MultiStepForm {
 
   renderStep() {
     switch (this.currentStep) {
-      case "intro": return this.stepIntro();
-      case "nome": return this.stepNome();
-      case "tel": return this.stepTelefone();
-      case "faturamento": return this.stepFaturamento();
+      case "intro":        return this.stepIntro();
+      case "faturamento":  return this.stepFaturamento();
       case "investimento": return this.stepInvestimento();
-      case "aprovado": return this.stepAprovado();
-      case "encerra": return this.stepEncerra();
-      case "erro": return this.stepErro();
+      case "aprovado":     return this.stepAprovado();
+      case "encerra":      return this.stepEncerra();
+      case "erro":         return this.stepErro();
     }
     return "";
   }
@@ -88,34 +88,6 @@ class MultiStepForm {
         <p class="form-desc">Responda 4 perguntas rápidas e entraremos em contato em até 5 minutos.</p>
         <div class="form-actions">
           <button type="button" class="btn btn-primary" data-action="next-from-intro">QUERO MAIS CONTRATOS →</button>
-        </div>
-      </div>
-    `;
-  }
-
-  stepNome() {
-    return `
-      <div class="form-step active">
-        <label class="form-label" for="nome-${this.instanceId()}">Qual o seu nome completo?</label>
-        <input class="form-input" id="nome-${this.instanceId()}" type="text" placeholder="Seu nome completo" autocomplete="name" value="${this.escape(this.data.nome)}" required>
-        <div class="form-error" data-error="nome">Por favor, digite seu nome.</div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-primary" data-action="next-nome">PRÓXIMO →</button>
-          <button type="button" class="btn-ghost" data-action="back">← Voltar</button>
-        </div>
-      </div>
-    `;
-  }
-
-  stepTelefone() {
-    return `
-      <div class="form-step active">
-        <label class="form-label" for="tel-${this.instanceId()}">Seu WhatsApp (com DDD)</label>
-        <input class="form-input" id="tel-${this.instanceId()}" type="tel" placeholder="(00) 00000-0000" autocomplete="tel" value="${this.escape(this.data.telefone)}" required>
-        <div class="form-error" data-error="tel">Telefone incompleto. Use o formato (XX) XXXXX-XXXX.</div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-primary" data-action="next-tel">PRÓXIMO →</button>
-          <button type="button" class="btn-ghost" data-action="back">← Voltar</button>
         </div>
       </div>
     `;
@@ -136,9 +108,6 @@ class MultiStepForm {
           ${opcoes.map(([val,txt]) => `
             <button type="button" class="radio-card ${this.data.faturamento===val?'selected':''}" data-action="pick-faturamento" data-value="${val}">${txt}</button>
           `).join("")}
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn-ghost" data-action="back">← Voltar</button>
         </div>
       </div>
     `;
@@ -170,7 +139,15 @@ class MultiStepForm {
     return `
       <div class="form-step active">
         <h3 class="form-title">Ótimo! Seu escritório tem perfil.</h3>
-        <p class="form-desc">Vamos entrar em contato com <strong>${this.escape(this.data.nome)}</strong> no WhatsApp <strong>${this.escape(this.data.telefone)}</strong> em até 5 minutos.</p>
+        <p class="form-desc">Preencha abaixo e nosso time entra em contato em até 5 minutos.</p>
+        <label class="form-label" for="nome-${this.instanceId()}">Seu nome completo</label>
+        <input class="form-input" id="nome-${this.instanceId()}" type="text" placeholder="Seu nome completo" autocomplete="name" value="${this.escape(this.data.nome)}" data-bind="nome" required>
+        <div class="form-error" data-error="nome">Por favor, digite seu nome.</div>
+
+        <label class="form-label" for="tel-${this.instanceId()}">Seu WhatsApp (com DDD)</label>
+        <input class="form-input" id="tel-${this.instanceId()}" type="tel" placeholder="(00) 00000-0000" autocomplete="tel" value="${this.escape(this.data.telefone)}" data-bind="telefone" required>
+        <div class="form-error" data-error="tel">Telefone incompleto. Use o formato (XX) XXXXX-XXXX.</div>
+
         <label class="form-checkbox-wrap">
           <input type="checkbox" id="aceito-${this.instanceId()}">
           <span>Concordo com a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></span>
@@ -215,7 +192,7 @@ class MultiStepForm {
   bindStep() {
     const root = this.container;
 
-    // Máscara telefone
+    // Máscara telefone (onde houver)
     const telInput = root.querySelector('input[type="tel"]');
     if (telInput) {
       telInput.addEventListener("input", (e) => {
@@ -223,33 +200,27 @@ class MultiStepForm {
       });
     }
 
-    // Delegação de clicks por data-action
+    // Delegação de clicks por data-action (once, rebind em cada ação)
     root.addEventListener("click", this.handleClick.bind(this), { once: true });
 
-    // Focus em input de texto/tel se houver
-    const autoFocusEl = root.querySelector(".form-step.active input");
-    if (autoFocusEl && this.currentStep !== "aprovado") {
-      setTimeout(() => autoFocusEl.focus(), 50);
+    // Autofocus no primeiro input de texto quando houver
+    const autoFocusEl = root.querySelector(".form-step.active input[type='text']");
+    if (autoFocusEl) {
+      setTimeout(() => autoFocusEl.focus({ preventScroll: true }), 50);
     }
   }
 
   handleClick(e) {
     const target = e.target.closest("[data-action]");
     if (!target) {
-      this.bindStep(); // re-bind pra próximo click (listener é once)
+      this.bindStep();
       return;
     }
     const action = target.dataset.action;
 
     switch (action) {
       case "next-from-intro":
-        this.goTo("nome"); break;
-
-      case "next-nome":
-        this.handleNextNome(); break;
-
-      case "next-tel":
-        this.handleNextTel(); break;
+        this.goTo("faturamento"); break;
 
       case "pick-faturamento":
         this.handlePickFaturamento(target.dataset.value); break;
@@ -268,34 +239,12 @@ class MultiStepForm {
     }
   }
 
-  // ---------- VALIDAÇÃO + AVANÇO ----------
-  handleNextNome() {
-    const input = this.container.querySelector('input[type="text"]');
-    const value = (input.value || "").trim();
-    if (value.length < 2) {
-      this.showError("nome");
-      return;
-    }
-    this.data.nome = value;
-    this.goTo("tel");
-  }
-
-  handleNextTel() {
-    const input = this.container.querySelector('input[type="tel"]');
-    const value = (input.value || "").trim();
-    if (value.length < 14) { // (XX) XXXXX-XXXX = 15, mas aceita com 10 dígitos também via máscara
-      this.showError("tel");
-      return;
-    }
-    this.data.telefone = value;
-    this.goTo("faturamento");
-  }
-
+  // ---------- ROTEAMENTO ----------
   handlePickFaturamento(value) {
     this.data.faturamento = value;
-    if (value === "ate_10k")     this.goTo("encerra");
-    else if (value === "10k_25k") this.goTo("investimento");
-    else                          this.goTo("aprovado");
+    if (value === "ate_10k")       this.goTo("encerra");
+    else if (value === "10k_25k")  this.goTo("investimento");
+    else                           this.goTo("aprovado");
   }
 
   handlePickInvestimento(value) {
@@ -314,16 +263,24 @@ class MultiStepForm {
 
   // ---------- SUBMIT ----------
   async handleSubmit() {
-    // Captura edições nos inputs de revisão
     const nomeInput = this.container.querySelector('[data-bind="nome"]');
     const telInput  = this.container.querySelector('[data-bind="telefone"]');
-    if (nomeInput) this.data.nome = nomeInput.value.trim();
-    if (telInput)  this.data.telefone = telInput.value.trim();
+    const nome = nomeInput ? nomeInput.value.trim() : "";
+    const tel  = telInput  ? telInput.value.trim()  : "";
 
-    if (this.data.nome.length < 2 || this.data.telefone.length < 14) {
-      this.showErrorBox("Preencha seu nome e WhatsApp completo antes de enviar.");
+    // Valida nome
+    if (nome.length < 2) {
+      this.showError("nome");
       return;
     }
+    // Valida telefone (14 = "(XX) XXXX-XXXX", 15 = "(XX) XXXXX-XXXX")
+    if (tel.length < 14) {
+      this.showError("tel");
+      return;
+    }
+
+    this.data.nome = nome;
+    this.data.telefone = tel;
 
     const payload = {
       nome: this.data.nome,
@@ -335,16 +292,13 @@ class MultiStepForm {
       classificacao: classificarLead(this.data.faturamento, this.data.investimento)
     };
 
-    // Salva no sessionStorage pra eventual recuperação
     try { sessionStorage.setItem("pongui_last_lead", JSON.stringify(payload)); } catch(_) {}
 
-    // POST desligado por padrão → redirect direto
     if (!POST_ENABLED || !FORM_ENDPOINT) {
       window.location.href = REDIRECT_URL;
       return;
     }
 
-    // POST (quando ativado)
     try {
       const res = await fetch(FORM_ENDPOINT, {
         method: "POST",
@@ -369,7 +323,6 @@ class MultiStepForm {
   showError(key) {
     const el = this.container.querySelector(`[data-error="${key}"]`);
     if (el) el.classList.add("visible");
-    // rebind p/ permitir novo clique
     this.bindStep();
   }
 
