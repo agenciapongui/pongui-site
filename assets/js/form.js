@@ -170,13 +170,7 @@ class MultiStepForm {
     return `
       <div class="form-step active">
         <h3 class="form-title">Ótimo! Seu escritório tem perfil.</h3>
-        <p class="form-desc">Preencha abaixo e nosso time entra em contato em até 5 minutos.</p>
-        <div class="form-review">
-          <label class="form-label" for="nome-r-${this.instanceId()}">Nome</label>
-          <input class="form-input" id="nome-r-${this.instanceId()}" type="text" value="${this.escape(this.data.nome)}" autocomplete="name" data-bind="nome">
-          <label class="form-label" for="tel-r-${this.instanceId()}">WhatsApp</label>
-          <input class="form-input" id="tel-r-${this.instanceId()}" type="tel" value="${this.escape(this.data.telefone)}" autocomplete="tel" data-bind="telefone">
-        </div>
+        <p class="form-desc">Vamos entrar em contato com <strong>${this.escape(this.data.nome)}</strong> no WhatsApp <strong>${this.escape(this.data.telefone)}</strong> em até 5 minutos.</p>
         <label class="form-checkbox-wrap">
           <input type="checkbox" id="aceito-${this.instanceId()}">
           <span>Concordo com a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></span>
