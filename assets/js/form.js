@@ -85,9 +85,9 @@ class MultiStepForm {
     return `
       <div class="form-step active">
         <h3 class="form-title">Método Validado em +100 Escritórios de Advocacia</h3>
-        <p class="form-desc">Escritórios que aplicaram nosso método fecharam até 80 contratos em um único mês. Responda 4 perguntas rápidas e entraremos em contato em até 5 minutos.</p>
+        <p class="form-desc">Responda 4 perguntas rápidas e entraremos em contato em até 5 minutos.</p>
         <div class="form-actions">
-          <button type="button" class="btn btn-primary" data-action="next-from-intro">COMEÇAR →</button>
+          <button type="button" class="btn btn-primary" data-action="next-from-intro">QUERO MAIS CONTRATOS →</button>
         </div>
       </div>
     `;
