@@ -36,28 +36,28 @@ function maskPhone(value) {
 class MultiStepForm {
   constructor(container) {
     this.container = container;
-    this.data = { nome: "", telefone: "", faturamento: "", investimento: "" };
-    // Steps: intro -> faturamento -> [investimento] -> aprovado  (ou encerra)
+    this.data = { perfil: "", nome: "", telefone: "", faturamento: "", investimento: "" };
+    // Steps: intro -> perfil -> faturamento -> [investimento] -> aprovado  (ou encerra)
     this.currentStep = "intro";
     this.stepHistory = [];
     this.render();
   }
 
-  // dot mapping: faturamento=1, investimento=2, aprovado=3
+  // dot mapping: perfil=1, faturamento=2, investimento=3, aprovado=4
   getDotIndex() {
-    const map = { faturamento: 1, investimento: 2, aprovado: 3 };
+    const map = { perfil: 1, faturamento: 2, investimento: 3, aprovado: 4 };
     return map[this.currentStep] || 0;
   }
 
   showDots() {
-    return ["faturamento","investimento","aprovado"].includes(this.currentStep);
+    return ["perfil","faturamento","investimento","aprovado"].includes(this.currentStep);
   }
 
   render() {
     const dotIdx = this.getDotIndex();
     const dotsHtml = this.showDots()
       ? `<div class="form-progress">
-          ${[1,2,3].map(i => `<span class="progress-dot ${i <= dotIdx ? 'active':''}"></span>`).join("")}
+          ${[1,2,3,4].map(i => `<span class="progress-dot ${i <= dotIdx ? 'active':''}"></span>`).join("")}
         </div>`
       : `<div class="form-progress hidden"></div>`;
 
@@ -71,10 +71,12 @@ class MultiStepForm {
   renderStep() {
     switch (this.currentStep) {
       case "intro":        return this.stepIntro();
+      case "perfil":       return this.stepPerfil();
       case "faturamento":  return this.stepFaturamento();
       case "investimento": return this.stepInvestimento();
       case "aprovado":     return this.stepAprovado();
       case "encerra":      return this.stepEncerra();
+      case "naoAdvogado":  return this.stepNaoAdvogado();
       case "erro":         return this.stepErro();
     }
     return "";
@@ -88,6 +90,24 @@ class MultiStepForm {
         <p class="form-desc">Responda 4 perguntas rápidas e entraremos em contato em até 5 minutos.</p>
         <div class="form-actions">
           <button type="button" class="btn btn-primary" data-action="next-from-intro">QUERO MAIS CONTRATOS →</button>
+        </div>
+      </div>
+    `;
+  }
+
+  stepPerfil() {
+    const opcoes = [
+      ["autonomo",      "Sou advogado autônomo"],
+      ["socio",         "Sou sócio de escritório"],
+      ["nao_advogado",  "Não sou advogado"]
+    ];
+    return `
+      <div class="form-step active">
+        <label class="form-label">Qual o seu perfil?</label>
+        <div class="form-radio-cards" role="radiogroup" aria-label="Perfil">
+          ${opcoes.map(([val,txt]) => `
+            <button type="button" class="radio-card ${this.data.perfil===val?'selected':''}" data-action="pick-perfil" data-value="${val}">${txt}</button>
+          `).join("")}
         </div>
       </div>
     `;
@@ -173,6 +193,18 @@ class MultiStepForm {
     `;
   }
 
+  stepNaoAdvogado() {
+    return `
+      <div class="form-step active">
+        <h3 class="form-title">Obrigado pelo interesse!</h3>
+        <p class="form-desc">A Pongui atende exclusivamente escritórios de advocacia e advogados, então por enquanto não conseguimos te atender. Mas siga a Pongui no Instagram — publicamos conteúdos gratuitos de marketing jurídico toda semana!</p>
+        <div class="form-actions">
+          <a href="${INSTAGRAM_URL}" class="btn btn-primary" target="_blank" rel="noopener">SEGUIR A PONGUI NO INSTAGRAM →</a>
+        </div>
+      </div>
+    `;
+  }
+
   stepErro() {
     return `
       <div class="form-step active">
@@ -220,7 +252,10 @@ class MultiStepForm {
 
     switch (action) {
       case "next-from-intro":
-        this.goTo("faturamento"); break;
+        this.goTo("perfil"); break;
+
+      case "pick-perfil":
+        this.handlePickPerfil(target.dataset.value); break;
 
       case "pick-faturamento":
         this.handlePickFaturamento(target.dataset.value); break;
@@ -240,6 +275,12 @@ class MultiStepForm {
   }
 
   // ---------- ROTEAMENTO ----------
+  handlePickPerfil(value) {
+    this.data.perfil = value;
+    if (value === "nao_advogado") this.goTo("naoAdvogado");
+    else                          this.goTo("faturamento");
+  }
+
   handlePickFaturamento(value) {
     this.data.faturamento = value;
     if (value === "ate_10k")       this.goTo("encerra");
@@ -285,6 +326,7 @@ class MultiStepForm {
     const payload = {
       nome: this.data.nome,
       telefone: this.data.telefone,
+      perfil: this.data.perfil,
       faturamento: this.data.faturamento,
       investimento: this.data.investimento || null,
       timestamp: new Date().toISOString(),
