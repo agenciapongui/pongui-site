@@ -10,7 +10,7 @@
 // sem enviar dados.
 const FORM_ENDPOINT = "";      // ex: "https://formspree.io/f/xxxxx"
 const POST_ENABLED  = false;    // flip p/ true quando endpoint estiver configurado
-const REDIRECT_URL  = "/obrigado.html";
+const REDIRECT_URL  = "obrigado.html";
 const WHATSAPP_URL  = "https://tintim.link/whatsapp/050878cb-9389-412a-a6ef-42aa7e294c07/3553f9ea-ec50-4c24-b741-3ae7b0368b88";
 const INSTAGRAM_URL = "https://www.instagram.com/agenciapongui/";
 
@@ -179,7 +179,7 @@ class MultiStepForm {
         </div>
         <label class="form-checkbox-wrap">
           <input type="checkbox" id="aceito-${this.instanceId()}">
-          <span>Concordo com a <a href="/privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></span>
+          <span>Concordo com a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></span>
         </label>
         <div class="form-error-box" data-error-box style="display:none;"></div>
         <div class="form-actions">
